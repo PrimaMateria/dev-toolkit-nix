@@ -15,13 +15,11 @@
 
         profiles = {
           wsl = {
-            shellHook = pkgs.writeShellApplication {
-              name = "hook";
-              text = ''
-                unset name
-                export DISPLAY=:1
-              '';
-            };
+            hook = ''
+              unset name
+              export DISPLAY=:1
+              echo "wsl profile loaded"
+            '';
           };
 
           node = {
@@ -55,32 +53,28 @@
               nodejs-18_x
             ];
 
-            shellHook = pkgs.writeShellApplication {
-              name = "hook";
-              text = ''
-                if [ ! -d "$HOME/.npm-global" ]; then
-                  mkdir "$HOME/.npm-global"
-                  echo "Created ~/.npm-global"
-                fi
+            hook = ''
+              if [ ! -d "$HOME/.npm-global" ]; then
+                mkdir "$HOME/.npm-global"
+                echo "Created ~/.npm-global"
+              fi
 
-                export PATH="$HOME/.npm-global/bin:$PATH"
-              '';
-            };
+              export PATH="$HOME/.npm-global/bin:$PATH"
+            '';
           };
 
           playwright = {
             packages = with pkgs; [
               playwright-driver.browsers
             ];
-            shellHook = pkgs.writeShellApplication {
-              name = "hook";
-              text = ''
-                # Prepare playwright
-                export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
-                export PLAYWRIGHT_BROWSERS_PATH=${pkgs.playwright-driver.browsers}
-                export PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true
-              '';
-            };
+
+            hook = ''
+              # Prepare playwright
+              export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+              export PLAYWRIGHT_BROWSERS_PATH=${pkgs.playwright-driver.browsers}
+              export PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true
+              echo "playwright profile loaded"
+            '';
           };
 
           jest = {
@@ -106,13 +100,10 @@
                     '';
                   })
             ];
-            shellHook = pkgs.writeShellApplication {
-              name = "hook";
-              text = ''
-                # Jest debug logs
-                export DEBUG_PRINT_LIMIT=5000000
-              '';
-            };
+            hook = ''
+              # Jest debug logs
+              export DEBUG_PRINT_LIMIT=5000000
+            '';
           };
 
           mockoon = {
