@@ -66,6 +66,17 @@
           playwright = {
             packages = with pkgs; [
               playwright-driver.browsers
+              (
+                # Fzf runner for integration tests
+                pkgs.writeShellApplication
+                  {
+                    name = "playdebug";
+                    runtimeInputs = [ pkgs.fzf ];
+                    text = ''
+                      TESTCASE=$(find src -name "*.int.test.ts*" | fzf)
+                      npm run test:int:debug -- "$TESTCASE"
+                    '';
+                  })
             ];
 
             hook = ''
