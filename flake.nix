@@ -157,6 +157,78 @@
               )
             ];
           };
+
+          # TODO: AppImage removed from GitHub, either build or migrate to newer mockoon in WF
+          mockoon-old = {
+            packages = [
+              (
+                let
+                  pname = "mockoon";
+                  version = "1.19.0";
+                  src = pkgs.fetchurl {
+                    url = "https://github.com/mockoon/mockoon/releases/download/v1.19.0/mockoon-1.19.0.AppImage";
+                    sha256 = "sha256-nfNa+zBDanMBMpJJg4+7g0+cWM2qOaweh+dFCpGKbEI=";
+                  };
+                  appimageContents = pkgs.appimageTools.extractType2 {
+                    inherit pname version src;
+                  };
+                in
+                pkgs.appimageTools.wrapType2
+                  {
+                    inherit pname version src;
+                    extraInstallCommands = ''
+                      mv $out/bin/${pname}-${version} $out/bin/${pname}
+
+                      install -Dm 444 ${appimageContents}/${pname}.desktop -t $out/share/applications
+                      cp -r ${appimageContents}/usr/share/icons $out/share
+
+                      substituteInPlace $out/share/applications/${pname}.desktop \
+                        --replace 'Exec=AppRun' 'Exec=${pname}'
+                    '';
+                  }
+              )
+            ];
+          };
+
+          i18n = {
+            packages = [
+              # Script that will update translation files with google-translated
+              # english value to target locale. Input is JSON jq path.
+              (
+                pkgs.writeShellApplication
+                  {
+                    name = "transwf";
+                    runtimeInputs = [ pkgs.translate-shell pkgs.jq ];
+                    text = ''
+                      JSON_PATH=$1
+                      LOCALES=( "cs" "de" "es" "fr" "it" "nl" "pl" "ro" "sk" "tr" )
+
+                      get_translation () {
+                        locale=$1
+                        translation=$(find ./src -path "**/$locale/translation.json")
+                        echo "$translation"
+                      }
+
+                      translation_en=$(get_translation "en")
+                      value_en=$(jq -r "$JSON_PATH" "$translation_en")
+                      echo "en = $value_en"
+
+                      for locale in "''${LOCALES[@]}"; do
+                        translation=$(get_translation "$locale")
+                        value=$(trans -b -t "$locale" "$value_en")
+                        echo "$locale = $value"
+                        jq "$JSON_PATH = \"$value\"" "$translation" > temp.json && mv temp.json "$translation"
+                      done
+                    '';
+                  }
+              )
+            ];
+          };
+
+
+          mariadb = {
+            package = [ pkgs.mycli ];
+          };
         };
       in
       {
