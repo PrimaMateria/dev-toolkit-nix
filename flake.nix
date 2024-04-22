@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    # nixpkgs.url = "/home/primamateria/dev/nixpkgs";
     utils.url = "github:numtide/flake-utils";
 
     haumea = {

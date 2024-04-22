@@ -7,12 +7,12 @@
 {pkgs}: (
   let
     pname = "mockoon";
-    version = "3.0.0";
+    version = "8.0.0";
     src =
       pkgs.fetchurl
       {
-        url = "https://github.com/mockoon/mockoon/releases/download/v3.0.0/mockoon-3.0.0.AppImage";
-        sha256 = "sha256-YGcD/8h21fUoBEAcBVI5jo0UMCKdVRdC1zxDIrHjU+8=";
+        url = "https://github.com/mockoon/mockoon/releases/download/v8.0.0/mockoon-8.0.0.x86_64.AppImage";
+        sha256 = "sha256-mhUjV8yFXS76kJDj28VeIv4/PlnKos/Ugo9k3RHnRaM=";
       };
     appimageContents =
       pkgs.appimageTools.extractType2

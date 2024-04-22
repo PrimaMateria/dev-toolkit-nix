@@ -5,6 +5,6 @@
   inherit (root) packages;
 in {
   packages = [
-    packages.mockoon-3_0_0
+    packages.mockoon
   ];
 }
