@@ -6,5 +6,7 @@
 in {
   packages = [
     packages.mockoon
+    packages.mockoon-cut
+    packages.mockoon-join
   ];
 }
