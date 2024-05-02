@@ -1,5 +1,5 @@
 {pkgs}: {
-  hook = ''
+  shellHook = ''
     unset name
     export DISPLAY=:1
   '';

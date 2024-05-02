@@ -7,7 +7,7 @@ in {
   packages = [
     packages.testdebug
   ];
-  hook = ''
+  shellHook = ''
     # Jest debug logs
     export DEBUG_PRINT_LIMIT=5000000
   '';

@@ -36,7 +36,7 @@ in {
           loadedMessage = "echo \"Profile ${profile.name} loaded\"";
         in
           if profile.definition ? shellHook
-          then profile.definition.shellHook ++ loadedMessage
+          then profile.definition.shellHook + loadedMessage
           else loadedMessage
       )
       profileList)

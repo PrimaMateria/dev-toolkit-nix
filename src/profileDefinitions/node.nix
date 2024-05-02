@@ -29,7 +29,7 @@
     nodejs-18_x
   ];
 
-  hook = ''
+  shellHook = ''
     if [ ! -d "$HOME/.npm-global" ]; then
       mkdir "$HOME/.npm-global"
       echo "Created ~/.npm-global"
