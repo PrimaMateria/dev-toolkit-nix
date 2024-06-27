@@ -7,6 +7,7 @@ in {
   buildDevShell = {
     profiles,
     name,
+    extraPackages ? [],
   }: let
     # collect chose profile definitions
     profileList = (
@@ -20,13 +21,15 @@ in {
 
     # concat lists of packages from chosen profile definitions; if the defintion
     # doesn't have packages defined, treat it as empty list
-    packages = builtins.concatLists (builtins.map (
-        profile:
-          if profile.definition ? packages
-          then profile.definition.packages
-          else []
-      )
-      profileList);
+    packages =
+      builtins.concatLists (builtins.map (
+          profile:
+            if profile.definition ? packages
+            then profile.definition.packages
+            else []
+        )
+        profileList)
+      ++ extraPackages;
 
     # concat shell hook strings from chosen definitions; each profile's shell
     # hook at least has echo of it's name; add default shell name echo at then
