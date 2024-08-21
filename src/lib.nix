@@ -8,6 +8,7 @@ in {
     profiles,
     name,
     extraPackages ? [],
+    extraShellHook ? "",
   }: let
     # collect chose profile definitions
     profileList = (
@@ -35,15 +36,18 @@ in {
     # hook at least has echo of it's name; add default shell name echo at then
     # end
     shellHook = builtins.concatStringsSep "\n" ((builtins.map (
-        profile: let
-          loadedMessage = "echo \"Profile ${profile.name} loaded\"";
-        in
-          if profile.definition ? shellHook
-          then profile.definition.shellHook + loadedMessage
-          else loadedMessage
-      )
-      profileList)
-    ++ ["echo \"DevShell ${name} started\""]);
+          profile: let
+            loadedMessage = "echo \"Profile ${profile.name} loaded\"";
+          in
+            if profile.definition ? shellHook
+            then profile.definition.shellHook + loadedMessage
+            else loadedMessage
+        )
+        profileList)
+      ++ [
+        extraShellHook
+        "echo \"DevShell ${name} started\""
+      ]);
   in
     pkgs.mkShell {
       inherit name packages shellHook;
