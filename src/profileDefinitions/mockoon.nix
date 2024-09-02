@@ -8,5 +8,6 @@ in {
     packages.mockoon
     packages.mockoon-cut
     packages.mockoon-join
+    packages.mocksrestart
   ];
 }
