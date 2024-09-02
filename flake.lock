@@ -37,27 +37,10 @@
         "type": "github"
       }
     },
-    "nixpkgsPlaywright": {
-      "locked": {
-        "lastModified": 1722912408,
-        "narHash": "sha256-0n2SsG4HyvkyGfkql0FobIXL1TPWl/r4qAFcliZHt80=",
-        "owner": "kalekseev",
-        "repo": "nixpkgs",
-        "rev": "64de11536a4afa0e24c1931ca5e9b66fefe6961e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "kalekseev",
-        "ref": "playwright-core",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "haumea": "haumea",
         "nixpkgs": "nixpkgs",
-        "nixpkgsPlaywright": "nixpkgsPlaywright",
         "utils": "utils"
       }
     },
