@@ -8,9 +8,13 @@ pkgs.writeShellApplication {
     no_debug=false
     repeat=false
 
+    # Determine the test type from the environment variable or default to "int"
+    PLAYDEBUG_TEST_TYPE=''${PLAYDEBUG_TEST_TYPE:-int}
+    echo "$PLAYDEBUG_TEST_TYPE"
+
     # Function to find testcase and save to temp file
     find_and_save_testcase() {
-        TESTCASE=$(find src -name "*.int.test.ts*" | fzf)
+        TESTCASE=$(find src -name "*.$PLAYDEBUG_TEST_TYPE.test.ts*" | fzf)
         echo "$TESTCASE" > "$TEMP_FILE"
     }
 
@@ -56,9 +60,9 @@ pkgs.writeShellApplication {
 
     # Determine which test command to run based on the presence of the --noDebug flag
     if $no_debug; then
-        npm run test:int:run -- "$TESTCASE"
+        npm run test:"$PLAYDEBUG_TEST_TYPE":run -- --retries 0 "$TESTCASE"
     else
-        npm run test:int:debug -- "$TESTCASE"
+        npm run test:"$PLAYDEBUG_TEST_TYPE":debug -- --retries 0 "$TESTCASE"
     fi
   '';
 }
