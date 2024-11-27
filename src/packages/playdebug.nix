@@ -7,6 +7,7 @@ pkgs.writeShellApplication {
     TEMP_FILE="/tmp/testcase.txt"
     no_debug=false
     repeat=false
+    filename_pattern=""
 
     # Determine the test type from the environment variable or default to "int"
     PLAYDEBUG_TEST_TYPE=''${PLAYDEBUG_TEST_TYPE:-int}
@@ -14,8 +15,14 @@ pkgs.writeShellApplication {
 
     # Function to find testcase and save to temp file
     find_and_save_testcase() {
-        TESTCASE=$(find src -name "*.$PLAYDEBUG_TEST_TYPE.test.ts*" | fzf)
-        echo "$TESTCASE" > "$TEMP_FILE"
+        filename_pattern=$1
+        if [ -n "$filename_pattern" ]; then
+            TESTCASE=$(find src -name "*$filename_pattern*.$PLAYDEBUG_TEST_TYPE.test.ts*" | fzf)
+            echo "$TESTCASE" > "$TEMP_FILE"
+        else
+            TESTCASE=$(find src -name "*.$PLAYDEBUG_TEST_TYPE.test.ts*" | fzf)
+            echo "$TESTCASE" > "$TEMP_FILE"
+        fi
     }
 
     # Function to handle repeat branch
@@ -29,13 +36,16 @@ pkgs.writeShellApplication {
     }
 
     # Parse command-line options
-    while getopts ":rx" opt; do
+    while getopts ":rxf:" opt; do
         case $opt in
             r)
                 repeat=true
                 ;;
             x)
                 no_debug=true
+                ;;
+            f)
+                filename_pattern="$OPTARG"
                 ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2
@@ -45,9 +55,8 @@ pkgs.writeShellApplication {
     done
     shift $((OPTIND - 1))
 
-    # Check if any arguments are left after parsing options
     if [ $# -gt 0 ]; then
-        echo "Error: Unexpected argument(s) provided."
+        echo "Error: Too many arguments provided."
         exit 1
     fi
 
@@ -55,7 +64,7 @@ pkgs.writeShellApplication {
     if $repeat; then
         repeat_testcase
     else
-        find_and_save_testcase
+        find_and_save_testcase "$filename_pattern"
     fi
 
     # Determine which test command to run based on the presence of the --noDebug flag
