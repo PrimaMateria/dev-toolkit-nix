@@ -14,8 +14,12 @@ in {
     profileList = (
       builtins.map
       (profile: {
-        name = profile;
-        definition = profileDefinitions.${profile};
+        name = profile.name;
+        definition = profileDefinitions.${profile.name} (
+          if profile ? options
+          then profile.options
+          else {}
+        );
       })
       profiles
     );

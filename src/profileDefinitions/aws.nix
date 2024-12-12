@@ -1,7 +1,7 @@
 {
   pkgs,
   root,
-}: let
+}: {}: let
   inherit (root) packages secrets;
 
   awsConfig = pkgs.writeText "awsConfig" ''

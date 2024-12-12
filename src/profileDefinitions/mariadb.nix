@@ -1,3 +1,3 @@
-{pkgs}: {
+{pkgs}: {}: {
   package = [pkgs.mycli];
 }
