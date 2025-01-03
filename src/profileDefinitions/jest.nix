@@ -1,11 +1,11 @@
 {
   pkgs,
   root,
-}: {}: let
+}: {npmScript ? null}: let
   inherit (root) packages;
 in {
   packages = [
-    packages.testdebug
+    (packages.testdebug.override {inherit npmScript;})
   ];
   shellHook = ''
     # Jest debug logs
