@@ -1,7 +1,7 @@
 {
   pkgs,
   root,
-}: {npmScript ? null}: let
+}: {npmScript ? "test:debug"}: let
   inherit (root) packages;
 in {
   packages = [
