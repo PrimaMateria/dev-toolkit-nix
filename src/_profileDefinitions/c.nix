@@ -1,10 +1,5 @@
-{
-  pkgs,
-  root,
-}: {}: let
-  inherit (root) packages;
-in {
-  packages = with packages; [
+{pkgs}: {}: {
+  packages = with pkgs; [
     clang
     clang-tools
     cmake
