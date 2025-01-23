@@ -6,7 +6,7 @@
 
   awsConfig = pkgs.writeText "awsConfig" ''
     [default]
-    ${(pkgs.lib.traceVal secrets.default).awsSsoConfig}
+    ${(pkgs.lib.traceVal secrets).awsSsoConfig}
   '';
 in {
   packages = [

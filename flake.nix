@@ -27,6 +27,15 @@
       in (haumea.lib.load {
         src = ./src;
         inputs = {inherit pkgs;};
+        transformer = haumea.lib.transformers.liftDefault;
       })
-    );
+    )
+    // {
+      templates = {
+        default = {
+          description = "Default template";
+          path = ./templates/default;
+        };
+      };
+    };
 }
