@@ -1,11 +1,11 @@
-{pkgs}: {}: {
+{pkgs}: {nodejsPackage ? pkgs.nodejs-18_x}: {
   packages = with pkgs; [
     (
       let
         npmrc =
           # The nix store is not writable, therefore we must instruct npm to
           # use different folder for the global packages,
-          pkgs.writeText "npmrc" ''
+          writeText "npmrc" ''
             prefix=~/.npm-global
             @finapi-internal:registry=https://repo.finapi.io/artifactory/api/npm/npm/
 
@@ -18,15 +18,15 @@
       in
         # NPM wrapper that passes user config stored in nix store. To avoid
         # name collision, it is named just `f` (the home key of index finger).
-        pkgs.writeShellApplication
+        writeShellApplication
         {
           name = "npm";
           text = ''
-            ${pkgs.nodejs-18_x}/bin/npm --userconfig ${npmrc} "$@"
+            ${nodejsPackage}/bin/npm --userconfig ${npmrc} "$@"
           '';
         }
     )
-    nodejs-18_x
+    nodejsPackage
   ];
 
   shellHook = ''
