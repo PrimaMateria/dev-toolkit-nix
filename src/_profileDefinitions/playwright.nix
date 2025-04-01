@@ -16,6 +16,7 @@ in {
     packages.playwright-browsers-1_46_1
     packages.playwright-browsers-1_47_0
     packages.playwright-browsers-1_48_2
+    packages.playwright-browsers-1_51_1
   ];
 
   shellHook = ''
