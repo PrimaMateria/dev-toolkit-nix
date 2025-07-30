@@ -15,9 +15,9 @@ pkgs.writeShellApplication {
 
     # Function to find testcase and save to temp file
     find_and_save_testcase() {
-        filename_pattern=$1
-        if [ -n "$filename_pattern" ]; then
-            TESTCASE=$(find src -name "*$filename_pattern*.$PLAYDEBUG_TEST_TYPE.test.ts*" | fzf)
+        path_pattern=$1
+        if [ -n "$path_pattern" ]; then
+            TESTCASE=$(find src -path "*$path_pattern*.$PLAYDEBUG_TEST_TYPE.test.ts*" | fzf)
             echo "$TESTCASE" > "$TEMP_FILE"
         else
             TESTCASE=$(find src -name "*.$PLAYDEBUG_TEST_TYPE.test.ts*" | fzf)
@@ -36,7 +36,17 @@ pkgs.writeShellApplication {
     }
 
     # Parse command-line options
-    while getopts ":rxf:" opt; do
+    show_help() {
+        echo "Usage: playdebug [options]"
+        echo
+        echo "Options:"
+        echo "  -r            Repeat the last test case"
+        echo "  -x            Run without debugging"
+        echo "  -f PATTERN    Filter test cases by path pattern"
+        echo "  -h, --help    Display this help message"
+    }
+
+    while getopts ":rxf:h" opt; do
         case $opt in
             r)
                 repeat=true
@@ -46,6 +56,10 @@ pkgs.writeShellApplication {
                 ;;
             f)
                 filename_pattern="$OPTARG"
+                ;;
+            h)
+                show_help
+                exit 0
                 ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2
