@@ -8,6 +8,7 @@
           writeText "npmrc" ''
             prefix=~/.npm-global
             @finapi-internal:registry=https://repo.finapi.io/artifactory/api/npm/npm/
+            @dev:registry=https://npm.finapi.ghe.com
 
             # Place following to the project's .npmrc
             # init-author-name=<name>
