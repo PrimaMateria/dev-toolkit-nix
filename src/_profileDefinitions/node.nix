@@ -1,4 +1,6 @@
-{pkgs}: {nodejsPackage ? pkgs.nodejs-18_x}: {
+{pkgs}: {version ? "20"}: let
+  nodejsPackage = pkgs."nodejs_${version}";
+in {
   packages = with pkgs; [
     (
       let
