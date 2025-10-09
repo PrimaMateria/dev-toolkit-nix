@@ -2,10 +2,16 @@
   description = "foo";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs";
     utils.url = "github:numtide/flake-utils";
-    devToolkit.url = "github:primamateria/dev-toolkit-nix";
-    # devToolkit.url = "/home/primamateria/dev/dev-toolkit-nix";
+    devToolkit = {
+      url = "github:primamateria/dev-toolkit-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    # devToolkit = {
+    #   url = "/home/primamateria/dev/dev-toolkit-nix";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
   };
   outputs = inputs @ {
     self,
@@ -23,6 +29,10 @@
           name = "nix.shell.foo";
           profiles = [
             {name = "wsl";}
+            # {
+            #   name = "node";
+            #   options = {version = "20";};
+            # }
           ];
         };
       });
