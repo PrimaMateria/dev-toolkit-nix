@@ -1,33 +1,27 @@
 {pkgs}: {version ? "20"}: let
   nodejsPackage = pkgs."nodejs_${version}";
+
+  # Registry config only, no secrets: this file ends up in the Nix store,
+  # which is world-readable, and is fetched as a plain tarball (bypassing any
+  # git-crypt filters) whenever a project pulls this flake via `github:`.
+  npmrcBase = pkgs.writeText "npmrc-base" ''
+    prefix=~/.npm-global
+    @finapi-internal:registry=https://repo.finapi.io/artifactory/api/npm/npm/
+    @dev:registry=https://npm.finapi.ghe.com
+  '';
+
+  npmrcRuntime = "$HOME/.npm-global/.npmrc";
 in {
   packages = with pkgs; [
     (
-      let
-        npmrc =
-          # The nix store is not writable, therefore we must instruct npm to
-          # use different folder for the global packages,
-          writeText "npmrc" ''
-            prefix=~/.npm-global
-            @finapi-internal:registry=https://repo.finapi.io/artifactory/api/npm/npm/
-            @dev:registry=https://npm.finapi.ghe.com
-
-            # Place following to the project's .npmrc
-            # init-author-name=<name>
-            # email=<email>
-            # //registry.npmjs.org/:_authToken=<authToken>
-            # //repo.finapi.io/artifactory/api/npm/npm/:_auth="<authToken>"
-          '';
-      in
-        # NPM wrapper that passes user config stored in nix store. To avoid
-        # name collision, it is named just `f` (the home key of index finger).
-        writeShellApplication
-        {
-          name = "npm";
-          text = ''
-            ${nodejsPackage}/bin/npm --userconfig ${npmrc} "$@"
-          '';
-        }
+      # NPM wrapper that passes user config assembled at shell start.
+      writeShellApplication
+      {
+        name = "npm";
+        text = ''
+          ${nodejsPackage}/bin/npm --userconfig "${npmrcRuntime}" "$@"
+        '';
+      }
     )
     nodejsPackage
   ];
@@ -39,5 +33,13 @@ in {
     fi
 
     export PATH="$HOME/.npm-global/bin:$PATH"
+
+    # Auth tokens live outside the repo entirely, in a per-machine file that
+    # is never committed. Assembled fresh on every shell start so it always
+    # reflects the latest local secret, and silently omitted if absent.
+    {
+      cat ${npmrcBase}
+      [ -f "$HOME/.config/dev-toolkit-nix/npmrc-auth" ] && cat "$HOME/.config/dev-toolkit-nix/npmrc-auth"
+    } > "${npmrcRuntime}"
   '';
 }
