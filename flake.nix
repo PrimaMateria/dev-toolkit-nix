@@ -22,7 +22,13 @@
       system: let
         pkgs = import nixpkgs {
           inherit system;
-          config = {allowUnfree = true;};
+          config = {
+            allowUnfree = true;
+            permittedInsecurePackages = [
+              "nodejs-20.20.2"
+              "nodejs-slim-20.20.2"
+            ];
+          };
         };
       in (haumea.lib.load {
         src = ./src;
