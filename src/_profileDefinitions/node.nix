@@ -1,4 +1,4 @@
-{pkgs}: {version ? "20"}: let
+{pkgs}: {version ? "24"}: let
   nodejsPackage = pkgs."nodejs_${version}";
 
   # Registry config only, no secrets: this file ends up in the Nix store,
